@@ -1,0 +1,50 @@
+body {
+    background-color: #f0e5d8;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    color: #6a4c93;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.birthday-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.birthday-card h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.birthday-card p {
+    font-size: 1.2em;
+    color: #333;
+}
+
+.button {
+    background-color: #6a4c93;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #5a3e7a;
+}

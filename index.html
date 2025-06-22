@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Selamat Ulang Tahun, Sayang!</title>
+  <style>
+    body {
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #star-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+      display: block;
+    }
+    #bubbleChatContainer {
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 10;
+      overflow: hidden;
+    }
+    .bubble-chat {
+      position: absolute;
+      padding: 10px 22px;
+      background: linear-gradient(90deg, #fffbe7 60%, #ffe0f7 100%);
+      color: #ff6f91;
+      font-weight: bold;
+      font-size: 1.1em;
+      border-radius: 24px;
+      box-shadow: 0 2px 12px #0002;
+      opacity: 0.85;
+      white-space: nowrap;
+      animation: bubbleUp 4.5s linear forwards;
+      border: 2px solid #ffb6b9;
+      user-select: none;
+      pointer-events: none;
+    }
+    @keyframes bubbleUp {
+      0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.8) rotate(-6deg);
+      }
+      10% {
+        opacity: 1;
+        transform: translateY(0) scale(1.05) rotate(2deg);
+      }
+      80% {
+        opacity: 1;
+        transform: translateY(-60vh) scale(1) rotate(-2deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-80vh) scale(0.95) rotate(0deg);
+      }
+    }
+    .dekorasi-global {
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .dekorasi-global .dekor-emoji {
+      position: absolute;
+      font-size: 2.5em;
+      opacity: 0.85;
+      user-select: none;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 8px #0005);
+    }
+    .anim-bounce {
+      animation: bounceText 1.5s infinite;
+    }
+    .anim-bounce2 {
+      animation: bounceText2 1.8s infinite;
+    }
+    @keyframes bounceText {
+      0%, 100% { transform: translateY(0);}
+      50% { transform: translateY(-10px);}
+    }
+    @keyframes bounceText2 {
+      0%, 100% { transform: translateY(0);}
+      50% { transform: translateY(12px);}
+    }
+    .anim-spin {
+      animation: spinDekor 2.5s linear infinite;
+    }
+    @keyframes spinDekor {
+      0% { transform: rotate(0);}
+      100% { transform: rotate(360deg);}
+    }
+    .center-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100vw;
+      position: absolute;
+      top: 0; left: 0;
+      background: rgba(255,255,255,0.07);
+      z-index: 100;
+      transition: opacity 0.7s;
+    }
+    .hide {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s;
+    }
+    .open-btn, .next-btn {
+      padding: 18px 44px;
+      font-size: 1.2em;
+      background: linear-gradient(90deg, #ff6f91, #ffb6b9);
+      color: white;
+      border: none;
+      border-radius: 32px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      cursor: pointer;
+      font-weight: bold;
+      letter-spacing: 1px;
+      transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+      outline: none;
+      margin-top: 24px;
+      margin-bottom: 8px;
+      display: inline-block;
+      z-index: 101;
+    }
+    .open-btn:hover, .next-btn:hover {
+      background: linear-gradient(90deg, #ffb6b9, #ff6f91);
+      transform: scale(1.07) rotate(-2deg);
+      box-shadow: 0 8px 32px rgba(255,111,145,0.18);
+    }
+    .pulse-anim {
+      animation: pulseBtn 1.2s infinite;
+    }
+    @keyframes pulseBtn {
+      0% { box-shadow: 0 0 0 0 #ffb6b966; }
+      70% { box-shadow: 0 0 0 16px #ffb6b900; }
+      100% { box-shadow: 0 0 0 0 #ffb6b900; }
+    }
+    .special-text {
+      margin-top: 8px;
+    }
+    .bounce-anim {
+      animation: bounceText 1.5s infinite;
+    }
+    .dekorasi-atas, .dekorasi-bawah {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 12px;
+      margin-top: 8px;
+    }
+    .dekor-emoji {
+      font-size: 2.2em;
+      filter: drop-shadow(0 2px 8px #0005);
+      user-select: none;
+      pointer-events: none;
+    }
+    .balloons {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      left: 0; top: 0;
+      pointer-events: none;
+      z-index: 105;
+      display: none;
+    }
+    .balloon {
+      position: absolute;
+      bottom: -80px;
+      width: 48px;
+      height: 68px;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      opacity: 0.85;
+      animation: floatUp 2.2s ease-out forwards;
+    }
+    .balloon1 { left: 12vw; background: #ff6f91; animation-delay: 0s;}
+    .balloon2 { left: 28vw; background: #f9f871; animation-delay: 0.2s;}
+    .balloon3 { left: 44vw; background: #bbded6; animation-delay: 0.4s;}
+    .balloon4 { left: 60vw; background: #8ac6d1; animation-delay: 0.1s;}
+    .balloon5 { left: 76vw; background: #ffb6b9; animation-delay: 0.3s;}
+    @keyframes floatUp {
+      0% { bottom: -80px; opacity: 0.85;}
+      80% { opacity: 1;}
+      100% { bottom: 80vh; opacity: 0;}
+    }
+    .string {
+      position: absolute;
+      left: 50%;
+      top: 68px;
+      width: 2px;
+      height: 36px;
+      background: #aaa;
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+    .card, .long-card {
+      background: rgba(30, 34, 54, 0.95);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      padding: 40px 32px;
+      max-width: 400px;
+      text-align: center;
+      opacity: 0;
+      transform: scale(0.95) translateY(40px);
+      transition: opacity 0.7s, transform 0.7s;
+      margin: 0 auto;
+      z-index: 110;
+      position: relative;
+      min-height: 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #fff2;
+      backdrop-filter: blur(2px);
+    }
+    .card.show, .long-card.show {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      transition: opacity 0.7s, transform 0.7s;
+      animation: popCard 0.8s;
+    }
+    @keyframes popCard {
+      0% { transform: scale(0.7) translateY(60px);}
+      70% { transform: scale(1.05) translateY(-10px);}
+      100% { transform: scale(1) translateY(0);}
+    }
+    .card h1, .long-card h1 {
+      color: #ffb6b9;
+      margin-bottom: 16px;
+      animation: fadeInText 1.2s;
+      text-shadow: 0 2px 8px #0008;
+    }
+    @keyframes fadeInText {
+      from { opacity: 0; letter-spacing: 0.2em;}
+      to { opacity: 1; letter-spacing: 0.5px;}
+    }
+    .card p, .long-card p {
+      color: #fff;
+      font-size: 1.2em;
+      margin-bottom: 24px;
+      min-height: 3.5em;
+      letter-spacing: 0.5px;
+      animation: fadeInText 1.5s;
+      text-shadow: 0 1px 6px #0006;
+    }
+    .love {
+      font-size: 2.5em;
+      color: #ff6f91;
+      animation: pulse 1.5s infinite;
+      text-shadow: 0 2px 8px #0008;
+    }
+    .fadein-anim {
+      opacity: 0;
+      transform: scale(0.96);
+      animation: fadeInScale 1.2s forwards;
+      animation-delay: 0.2s;
+    }
+    #birthdayCard.show .fadein-anim {
+      opacity: 1;
+    }
+    @keyframes fadeInScale {
+      0% { opacity: 0; transform: scale(0.96);}
+      70% { opacity: 1; transform: scale(1.04);}
+      100% { opacity: 1; transform: scale(1);}
+    }
+    #miniConfetti {
+      pointer-events: none;
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+    }
+    .mini-confetti-piece {
+      position: absolute;
+      width: 8px;
+      height: 12px;
+      border-radius: 3px;
+      opacity: 0.7;
+      animation: miniConfettiFall 1.8s linear forwards;
+    }
+    @keyframes miniConfettiFall {
+      0% { transform: translateY(-20px) rotate(0deg);}
+      100% { transform: translateY(220px) rotate(360deg);}
+    }
+    .typewriter {
+      display: inline-block;
+      border-right: 2px solid #ff6f91;
+      white-space: pre-wrap;
+      overflow: hidden;
+      animation: blink-caret 0.8s step-end infinite;
+    }
+    @keyframes blink-caret {
+      0%, 100% { border-color: #ff6f91; }
+      50% { border-color: transparent; }
+    }
+    .long-card {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.95) translateY(40px);
+      opacity: 0;
+      z-index: 120;
+      width: 90vw;
+      max-width: 440px;
+      min-height: 320px;
+      background: rgba(30, 34, 54, 0.97);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      padding: 48px 32px;
+      transition: opacity 0.7s, transform 0.7s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #fff2;
+      backdrop-filter: blur(2px);
+    }
+    .long-card.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) translateY(0);
+      animation: popCard 0.8s;
+    }
+    .confetti {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 12px;
+      height: 18px;
+      border-radius: 4px;
+      opacity: 0.8;
+      animation: confetti-fall 2.2s linear forwards;
+    }
+    @keyframes confetti-fall {
+      0% { transform: translateY(-40px) rotate(0deg);}
+      100% { transform: translateY(100vh) rotate(360deg);}
+    }
+    .photo-slide {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      background: rgba(30,34,54,0.97);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      padding: 48px 32px;
+      z-index: 130;
+      width: 90vw;
+      max-width: 520px;
+      min-height: 320px;
+      text-align: center;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      animation: popCard 0.8s;
+    }
+    .photo-slide.show {
+      display: flex;
+      animation: popCard 0.8s;
+    }
+    .photo-slide h1 {
+      color: #f9f871;
+      margin-bottom: 18px;
+      text-shadow: 0 2px 8px #0008;
+    }
+    .photo-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 16px;
+    }
+    .gallery-img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px #0005;
+      border: 2px solid #fff2;
+      background: #222;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .gallery-img:hover {
+      transform: scale(1.12) rotate(-2deg);
+      box-shadow: 0 4px 24px #ffb6b9aa;
+      z-index: 2;
+      border-color: #ffb6b9;
+    }
+    .photo-popup {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(20,20,30,0.85);
+      align-items: center;
+      justify-content: center;
+    }
+    .photo-popup.show {
+      display: flex;
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0;}
+      to { opacity: 1;}
+    }
+    .popup-content {
+      background: #222b;
+      border-radius: 18px;
+      padding: 24px 18px 18px 18px;
+      text-align: center;
+      box-shadow: 0 8px 32px #000a;
+      position: relative;
+      max-width: 90vw;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .popup-content img {
+      max-width: 320px;
+      max-height: 320px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 12px #0008;
+    }
+    .popup-close {
+      position: absolute;
+      top: 8px; right: 16px;
+      font-size: 2em;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+      z-index: 2;
+      transition: color 0.2s;
+    }
+    .popup-close:hover {
+      color: #ffb6b9;
+    }
+    #popupCaption {
+      color: #fff;
+      font-size: 1.15em;
+      text-shadow: 0 1px 6px #0006;
+    }
+  </style>
+</head>
+<body>
+  <div id="bubbleChatContainer"></div>
+  <div class="dekorasi-global">
+    <span class="dekor-emoji anim-bounce" style="left:5vw;top:4vh;">🎈</span>
+    <span class="dekor-emoji anim-spin" style="left:90vw;top:7vh;">🎂</span>
+    <span class="dekor-emoji anim-bounce2" style="left:50vw;top:2vh;">✨</span>
+    <span class="dekor-emoji anim-bounce2" style="left:15vw;top:90vh;">🎉</span>
+    <span class="dekor-emoji anim-bounce" style="left:80vw;top:85vh;">🎁</span>
+    <span class="dekor-emoji anim-bounce2" style="left:60vw;top:95vh;">🧁</span>
+  </div>
+  <canvas id="star-canvas"></canvas>
+  <audio id="bgMusic" autoplay loop>
+    <source src="lagu3.mp3" type="audio/mpeg">
+    Browser kamu tidak mendukung audio.
+  </audio>
+  <div class="center-box" id="startBox">
+    <div class="dekorasi-atas">
+      <span class="dekor-emoji anim-bounce">🎈</span>
+      <span class="dekor-emoji anim-spin">🎂</span>
+      <span class="dekor-emoji anim-bounce2">✨</span>
+    </div>
+    <button class="open-btn pulse-anim" id="openBtn">Buka Surprise!</button>
+    <div class="special-text bounce-anim" style="font-size:1.1em;color:#ffb6b9;font-weight:500;">
+      Klik tombol untuk melihat ucapan spesial 🎁
+    </div>
+    <div class="dekorasi-bawah">
+      <span class="dekor-emoji anim-bounce2">🎉</span>
+      <span class="dekor-emoji anim-bounce">🎁</span>
+      <span class="dekor-emoji anim-bounce2">🧁</span>
+    </div>
+  </div>
+  <div class="balloons" id="balloons">
+    <div class="balloon balloon1"><div class="string"></div></div>
+    <div class="balloon balloon2"><div class="string"></div></div>
+    <div class="balloon balloon3"><div class="string"></div></div>
+    <div class="balloon balloon4"><div class="string"></div></div>
+    <div class="balloon balloon5"><div class="string"></div></div>
+  </div>
+  <div class="card" id="birthdayCard">
+    <div class="dekorasi-atas">
+      <span class="dekor-emoji anim-bounce">🎉</span>
+      <span class="dekor-emoji anim-spin">🎂</span>
+      <span class="dekor-emoji anim-bounce2">🎊</span>
+    </div>
+    <div class="love">💖</div>
+    <h1 class="fadein-anim">Selamat Ulang Tahun, Sayang!</h1>
+    <p id="typewriter" class="fadein-anim"></p>
+    <button class="next-btn" id="nextBtn" style="display:none;">Lihat Ucapan Panjang</button>
+    <div class="love">💖</div>
+    <div class="dekorasi-bawah">
+      <span class="dekor-emoji anim-bounce2">🎁</span>
+      <span class="dekor-emoji anim-bounce">✨</span>
+      <span class="dekor-emoji anim-bounce2">🧁</span>
+    </div>
+    <div id="miniConfetti"></div>
+  </div>
+  <div class="long-card" id="longCard">
+    <div class="love">🎂</div>
+    <h1>Ucapan Panjang Untukmu</h1>
+    <p>
+      Selamat ulang tahun ya! Hari ini aku ingin kamu tahu betapa berharganya kamu di hidupku. Semoga setiap langkahmu selalu diberi kemudahan, kesehatan, dan kebahagiaan yang tak pernah habis. Terima kasih sudah jadi teman, sahabat, dan seseorang yang selalu membuat hari-hariku lebih berwarna.<br><br>
+      Aku harap semua impianmu bisa tercapai satu per satu, dan kamu selalu dikelilingi orang-orang yang tulus menyayangimu. Jangan lupa untuk selalu tersenyum dan menikmati setiap momen kecil yang hadir. Makasih udah jadi bagian penting dalam hidupku. Aku selalu doakan yang terbaik untukmu! 🥰
+    </p>
+    <button class="next-btn" id="toPhotoBtn" style="margin-top:16px;">Lihat Kenangan Kita</button>
+    <div class="love">🎉</div>
+  </div>
+  <div class="photo-slide" id="photoSlide">
+    <h1>Kenangan Kita</h1>
+    <div class="photo-gallery">
+      <img src="foto1.jpg" alt="Foto 1" class="gallery-img" data-caption="Ini pertama kali aku di rayain ultahnya saya kamu hahaha">
+      <img src="foto2.jpg" alt="Foto 2" class="gallery-img" data-caption="Waktu pertama kali kamu ketemu cowny,kasian banget cowny gabisa nafas">
+      <img src="foto3.jpg" alt="Foto 3" class="gallery-img" data-caption="foto pertama kali pas kamu sempro dan pertama kali juga aku gift bunga ke perempuan hahaha.">
+      <img src="foto4.jpg" alt="Foto 4" class="gallery-img" data-caption="ini pas kita ke bxsea, ngerencanain ini lama bngt hahaha.">
+      <img src="foto5.jpg" alt="Foto 5" class="gallery-img" data-caption="ini waktu kita pertama kali merakit lego SERUUUU!!, tapi abis itu berantem wkwkw ytta deh.">
+      <img src="foto6.jpg" alt="Foto 6" class="gallery-img" data-caption="WKWK INI LUCU BANGET, LAGI KKN SAKIT TRUS PULANG TRUS BELANJA MALAH NYASAR WKKWWK">
+    </div>
+  </div>
+  <div id="photoPopup" class="photo-popup">
+    <div class="popup-content">
+      <span id="popupClose" class="popup-close">&times;</span>
+      <img id="popupImg" src="" alt="Foto" />
+      <div id="popupCaption"></div>
+    </div>
+  </div>
+  <div class="confetti" id="confetti"></div>
+  <script>
+    // Bintang jatuh galaxy
+    const canvas = document.getElementById('star-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let shootingStars = [];
+    let stars = [];
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    function randomBetween(a, b) {
+      return a + Math.random() * (b - a);
+    }
+    for (let i = 0; i < 200; i++) {
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 1.1 + 0.2,
+        alpha: Math.random() * 0.5 + 0.5
+      });
+    }
+    function createShootingStar() {
+      shootingStars.push({
+        x: randomBetween(0, width),
+        y: randomBetween(-height * 0.2, 0),
+        len: randomBetween(80, 180),
+        speed: randomBetween(8, 16),
+        size: randomBetween(0.7, 1.5),
+        alpha: randomBetween(0.5, 1),
+        life: 0,
+        angle: randomBetween(Math.PI / 4, Math.PI / 3)
+      });
+    }
+    setInterval(() => {
+      for (let i = 0; i < 3; i++) createShootingStar();
+    }, 500);
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+      for (let s of stars) {
+        ctx.save();
+        ctx.globalAlpha = s.alpha;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI);
+        ctx.fillStyle = "#fff";
+        ctx.shadowColor = "#fff";
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.restore();
+      }
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        let star = shootingStars[i];
+        ctx.save();
+        ctx.globalAlpha = star.alpha;
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = star.size;
+        ctx.shadowColor = "#fff";
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.moveTo(star.x, star.y);
+        ctx.lineTo(
+          star.x - Math.cos(star.angle) * star.len,
+          star.y - Math.sin(star.angle) * star.len
+        );
+        ctx.stroke();
+        ctx.restore();
+        star.x += Math.cos(star.angle) * star.speed;
+        star.y += Math.sin(star.angle) * star.speed;
+        star.life += star.speed;
+        if (
+          star.x > width + 100 ||
+          star.y > height + 100 ||
+          star.life > width * 1.2
+        ) {
+          shootingStars.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    // Bubble chat ulang tahun (SEPANJANG SLIDE)
+    const bubbleMessages = [
+      "Happy Birthday Shela! 🎉",
+      "Semoga panjang umur! 🥳",
+      "Wish you all the best! 💖",
+      "Selamat ulang tahun! 🎂",
+      "Bahagia selalu ya! ✨",
+      "Semoga sehat selalu! 💪",
+      "Enjoy your special day! 🎈",
+      "Sukses terus ya! 🌟",
+      "Love you! 💕",
+      "Make a wish! 🕯️"
+    ];
+    function launchBubbleChat() {
+      const container = document.getElementById('bubbleChatContainer');
+      if (!container) return;
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble-chat';
+      bubble.textContent = bubbleMessages[Math.floor(Math.random() * bubbleMessages.length)];
+      bubble.style.left = (Math.random() * 70 + 10) + 'vw';
+      bubble.style.bottom = '-40px';
+      bubble.style.fontSize = (Math.random() * 0.3 + 1) + 'em';
+      container.appendChild(bubble);
+      setTimeout(() => {
+        if (bubble.parentNode) bubble.parentNode.removeChild(bubble);
+      }, 4500);
+    }
+    setInterval(() => {
+      launchBubbleChat();
+    }, 900);
+
+    // Birthday logic
+    const openBtn = document.getElementById('openBtn');
+    const startBox = document.getElementById('startBox');
+    const balloons = document.getElementById('balloons');
+    const card = document.getElementById('birthdayCard');
+    const typewriter = document.getElementById('typewriter');
+    const nextBtn = document.getElementById('nextBtn');
+    const longCard = document.getElementById('longCard');
+    const toPhotoBtn = document.getElementById('toPhotoBtn');
+    const photoSlide = document.getElementById('photoSlide');
+    const bgMusic = document.getElementById('bgMusic');
+    const confetti = document.getElementById('confetti');
+    const message = "Selamat ulang tahun ya! Semoga semua hal baik datang di hidupmu—kesehatan, kebahagiaan, dan hal-hal kecil yang bikin kamu senyum tiap hari. Makasih udah jadi bagian penting dalam hidupku";
+
+    // Mini confetti animasi di kartu ucapan
+    function launchMiniConfetti() {
+      const miniConfetti = document.getElementById('miniConfetti');
+      if (!miniConfetti) return;
+      miniConfetti.innerHTML = '';
+      const colors = ['#ff6f91', '#f9f871', '#bbded6', '#8ac6d1', '#ffb6b9', '#fff', '#f7cac9'];
+      for (let i = 0; i < 18; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'mini-confetti-piece';
+        piece.style.left = Math.random() * 95 + '%';
+        piece.style.top = Math.random() * 10 + '%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = (Math.random() * 0.7) + 's';
+        piece.style.transform = `rotate(${Math.random()*360}deg)`;
+        miniConfetti.appendChild(piece);
+      }
+      setTimeout(() => { miniConfetti.innerHTML = ''; }, 1800);
+    }
+    // Tampilkan mini confetti terus-menerus saat kartu ucapan tampil
+    const birthdayCard = document.getElementById('birthdayCard');
+    const observer = new MutationObserver(() => {
+      if (birthdayCard.classList.contains('show')) {
+        launchMiniConfetti();
+        if (!birthdayCard._miniConfettiInterval) {
+          birthdayCard._miniConfettiInterval = setInterval(launchMiniConfetti, 1800);
+        }
+      } else {
+        clearInterval(birthdayCard._miniConfettiInterval);
+        birthdayCard._miniConfettiInterval = null;
+        document.getElementById('miniConfetti').innerHTML = '';
+      }
+    });
+    observer.observe(birthdayCard, { attributes: true, attributeFilter: ['class'] });
+
+    // Pastikan balon dan kartu tidak tampil di awal
+    balloons.style.display = 'none';
+    card.style.display = 'none';
+    longCard.style.display = 'none';
+    photoSlide.style.display = 'none';
+
+    // Pause lagu di awal (agar tidak autoplay sebelum klik)
+    bgMusic.pause();
+
+    openBtn.onclick = function() {
+      bgMusic.currentTime = 0;
+      bgMusic.play();
+      startBox.classList.add('hide');
+      setTimeout(() => {
+        startBox.style.display = 'none';
+        balloons.style.display = 'block';
+        setTimeout(() => {
+          balloons.style.display = 'none';
+          card.style.display = 'flex';
+          setTimeout(() => {
+            card.classList.add('show');
+            launchConfetti();
+            typeWriterEffect(message, typewriter, 0, 30, () => {
+              nextBtn.style.display = 'inline-block';
+            });
+          }, 50);
+        }, 2300);
+      }, 700);
+    };
+
+    function typeWriterEffect(text, el, i, speed, callback) {
+      if (i < text.length) {
+        el.innerHTML = '<span class="typewriter">' + text.slice(0, i+1).replace(/\n/g, '<br>') + '</span>';
+        setTimeout(() => typeWriterEffect(text, el, i+1, speed, callback), text[i] === '\n' ? speed*6 : speed);
+      } else {
+        el.innerHTML = text.replace(/\n/g, '<br>');
+        if (callback) callback();
+      }
+    }
+
+    nextBtn.onclick = function() {
+      card.classList.remove('show');
+      setTimeout(() => {
+        card.style.display = 'none';
+        longCard.style.display = 'flex';
+        setTimeout(() => {
+          longCard.classList.add('show');
+          launchConfetti();
+        }, 50);
+      }, 700);
+    };
+
+    toPhotoBtn.onclick = function() {
+      longCard.classList.remove('show');
+      setTimeout(() => {
+        longCard.style.display = 'none';
+        photoSlide.classList.add('show');
+        photoSlide.style.display = 'flex';
+      }, 700);
+    };
+
+    function launchConfetti() {
+      confetti.innerHTML = '';
+      const colors = ['#ff6f91', '#f9f871', '#bbded6', '#8ac6d1', '#ffb6b9', '#fff', '#f7cac9'];
+      for (let i = 0; i < 40; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = (Math.random() * 0.8) + 's';
+        piece.style.transform = `rotate(${Math.random()*360}deg)`;
+        confetti.appendChild(piece);
+      }
+      setTimeout(() => { confetti.innerHTML = ''; }, 2500);
+    }
+
+    // Popup foto galeri
+    document.querySelectorAll('.gallery-img').forEach(img => {
+      img.onclick = function() {
+        document.getElementById('popupImg').src = this.src;
+        document.getElementById('popupCaption').textContent = this.getAttribute('data-caption');
+        document.getElementById('photoPopup').classList.add('show');
+      };
+    });
+    document.getElementById('popupClose').onclick = function() {
+      document.getElementById('photoPopup').classList.remove('show');
+    };
+    document.getElementById('photoPopup').onclick = function(e) {
+      if (e.target === this) this.classList.remove('show');
+    };
+  </script>
+</body>
+</html>
